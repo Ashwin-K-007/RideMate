@@ -24,13 +24,6 @@ def init_db():
         )
     ''')
     
-    cursor.execute("SELECT COUNT(*) FROM rides")
-    if cursor.fetchone()[0] == 0:
-        cursor.executemany('''
-            INSERT INTO rides (driver_name, phone, vehicle_type, vehicle_model, origin, destination, ride_time, seats_available, price_per_seat)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''',)
-    
     conn.commit()
     conn.close()
 
