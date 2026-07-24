@@ -31,7 +31,7 @@ def init_db():
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''',)
     
-    conn.commit()s
+    conn.commit()
     conn.close()
 
 @app.route('/')
