@@ -9,7 +9,6 @@ def init_db():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     
-    # Create Rides Table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS rides (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -25,18 +24,12 @@ def init_db():
         )
     ''')
     
-    # Check if database is empty, seed with realistic student data if true
     cursor.execute("SELECT COUNT(*) FROM rides")
     if cursor.fetchone()[0] == 0:
-        sample_rides = [
-            ("Aravind K.", "+91 98765 43210", "Bike", "Honda Unicorn 150", "City Bus Stand", "College Campus Gate 1", "08:30 AM", 1, 20),
-            ("Rohan S.", "+91 87654 32109", "Car", "Hyundai i20", "Railway Station", "College Campus Gate 2", "08:45 AM", 3, 45),
-            ("Vikram P.", "+91 76543 21098", "Bike", "Royal Enfield", "Main Highway Bypass", "College Campus Gate 1", "08:15 AM", 1, 25)
-        ]
         cursor.executemany('''
             INSERT INTO rides (driver_name, phone, vehicle_type, vehicle_model, origin, destination, ride_time, seats_available, price_per_seat)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', sample_rides)
+        ''',)
     
     conn.commit()
     conn.close()
@@ -105,7 +98,6 @@ def book_ride(ride_id):
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
         
-        # Check seats
         cursor.execute("SELECT seats_available FROM rides WHERE id = ?", (ride_id,))
         row = cursor.fetchone()
         
@@ -113,7 +105,6 @@ def book_ride(ride_id):
             conn.close()
             return jsonify({"status": "error", "message": "No seats available."}), 400
             
-        # Decrement seat count
         cursor.execute("UPDATE rides SET seats_available = seats_available - 1 WHERE id = ?", (ride_id,))
         conn.commit()
         conn.close()
